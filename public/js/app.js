@@ -22,13 +22,14 @@ $(function(){
               return item.id === obj.id;
             });
             //TODO - ajax call to add on server
-            days[idx][obj.key].push(item);
+
 
             $.ajax({
               url: `/days/${days[idx].id}/${obj.key}/${obj.id}`,
               method: 'post'
             }).then(result => {
               console.log(result);
+              days[idx][obj.key].push(item);
               return renderDayAndOptions();
             }).catch(err => { throw err; });
             // renderDayAndOptions();
@@ -99,9 +100,7 @@ $(function(){
       //this function render day
       function renderDay(){
         var onRemoveItem = function(obj){
-          days[idx][obj.key] = days[idx][obj.key].filter(function(item){
-            return item.id !== obj.id;
-          });
+
           //TODO - update on server
           // renderDayAndOptions();
           $.ajax({
@@ -109,6 +108,9 @@ $(function(){
               method: 'delete'
             }).then(result => {
               console.log(result);
+              days[idx][obj.key] = days[idx][obj.key].filter(function(item){
+                return item.id !== obj.id;
+              });
               return renderDayAndOptions();
             }).catch(err => { throw err; });
         }
