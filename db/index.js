@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 
-const conn = new Sequelize(process.env.DATABASE_URL, {
+var databaseConn = process.env.DATABASE_URL || 'postgres://localhost/tripplanner_db';
+const conn = new Sequelize(databaseConn, {
   logging: false
 });
 
@@ -74,6 +75,91 @@ const seed = ()=> {
       day2.addRestaurant(tripOptions.restaurants[3]),
       day2.addActivity(tripOptions.activities[2])
     ])
+  });
+};
+
+
+Day.deleteDay = function(dayId){
+  let currentDay;
+  return Day.findOne({
+    where: {
+      id: dayId
+    }
+  }).then(day => {
+    currentDay = day;
+    // console.log(day.setHotels);
+    return day.setHotels([]);
+  }).then(() => {
+    // console.log(day);
+    return currentDay.setRestaurants([]);
+  }).then(() => {
+    return currentDay.setActivities([]);
+  }).then(() => {
+    return currentDay.destroy();
+  })
+};
+
+Day.addRestaurantById = function(dayId, restaurantId){
+  return Day.findOne({
+    where: {
+      id: dayId
+    }
+  }).then(day => {
+    return day.addRestaurants(restaurantId);
+  });
+};
+
+Day.deleteRestaurantById = function(dayId, restaurantId){
+  console.log("removeRestaurantById called");
+  console.log(dayId, restaurantId);
+  return Day.findOne({
+    where: {
+      id: dayId
+    }
+  }).then(day => {
+    return day.removeRestaurants(restaurantId);
+  });
+};
+
+// Hotels
+Day.addHotelById = function(dayId, hotelId){
+  return Day.findOne({
+    where: {
+      id: dayId
+    }
+  }).then(day => {
+    return day.addHotels(hotelId);
+  });
+};
+
+Day.deleteHotelById = function(dayId, hotelId){
+  return Day.findOne({
+    where: {
+      id: dayId
+    }
+  }).then(day => {
+    return day.removeHotels(hotelId);
+  });
+};
+
+// Activities
+Day.addActivityById = function(dayId, activityId){
+  return Day.findOne({
+    where: {
+      id: dayId
+    }
+  }).then(day => {
+    return day.addActivities(activityId);
+  });
+};
+
+Day.deleteActivityById = function(dayId, activityId){
+  return Day.findOne({
+    where: {
+      id: dayId
+    }
+  }).then(day => {
+    return day.removeActivities(activityId);
   });
 };
 
