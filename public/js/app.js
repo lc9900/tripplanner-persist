@@ -25,7 +25,7 @@ $(function(){
             days[idx][obj.key].push(item);
 
             $.ajax({
-              url: `/days/${idx+1}/${obj.key}/${obj.id}`,
+              url: `/days/${days[idx].id}/${obj.key}/${obj.id}`,
               method: 'post'
             }).then(result => {
               console.log(result);
@@ -57,21 +57,21 @@ $(function(){
             return;
           }
           //TODO - remove the day on server
-          days = days.filter(function(day, _idx){
-            return _idx !== idx;
-          });
+
           $.ajax({
-            url: `/days/${idx+1}`,
+            url: `/days/${days[idx].id}`,
             method: 'delete'
           })
           .then(result => {
             console.log(result);
+
+            days = days.filter(function(day, _idx){
+              return _idx !== idx;
+            });
+
             idx = 0;
             return renderDayPicker();
           }).catch(err => { throw err; });
-
-          // idx = 0;
-          // renderDayPicker();
         }
 
         var selectDay = function(_idx){
